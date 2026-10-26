@@ -18,6 +18,8 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
@@ -26,7 +28,7 @@ import java.util.List;
 public class TTauto extends OpMode {
 
     Follower follower;
-    //DcMotor intake, lancador;
+    DcMotor intake, lancador;
     Limelight3A limelight;
     double distanciaTag = -1;
 
@@ -34,6 +36,8 @@ public class TTauto extends OpMode {
 
     private final Pose start = poseFactory.of(56, 8, 90);
     private final Pose andaGanhaPonto = poseFactory.of(56, 12, 90);
+    private final Pose giroStart = poseFactory.of(56, 12, 90);
+    private final Pose giro = poseFactory.of(56, 12, 180);
     private final Pose intakeGardenStart = poseFactory.of(56, 12, 90);
     private final Pose intakeGarden = poseFactory.of(10, 8, 180);
     private final Pose lancar1Start = poseFactory.of(10, 8, 180);
@@ -51,6 +55,11 @@ public class TTauto extends OpMode {
     public Path andaGanhaPonto() {
         return Paths.line(start, andaGanhaPonto).linear(start, andaGanhaPonto);
     }
+
+    public Path giro() {
+        return Paths.line(giroStart, giro).linear(giroStart, giro);
+    }
+
 
     public Path intakeGarden() {
         return Paths.line(intakeGardenStart, intakeGarden).linear(intakeGardenStart, intakeGarden);
@@ -89,7 +98,7 @@ public class TTauto extends OpMode {
             }
         });
     }
-    /*private Command ligaIntake() {
+    private Command ligaIntake() {
         return instant(() -> intake.setPower(1));
     }
     private Command desligaIntake() {
@@ -101,18 +110,21 @@ public class TTauto extends OpMode {
     }
     private Command desligaLancador() {
         return  instant(() -> lancador.setPower(0));
-    }*/
+    }
 
     private Command autoRoutine() {
         return sequential(
                 follow(follower, andaGanhaPonto()),
-                //ligaLancador(),
+                ligaLancador(),
                 waitMs(2000),
-                //desligaLancador(),
+                desligaLancador(),
+
+                ligaIntake(),
+                follow(follower, giro()),
                 follow(follower, intakeGarden()),
-                //ligaIntake(),
                 waitMs(1000),
-                //desligaIntake(),
+                desligaIntake(),
+
                 follow(follower, lancar1()),
                 follow(follower, intakeFlower()),
                 follow(follower, lanca2()),
@@ -131,8 +143,8 @@ public class TTauto extends OpMode {
         limelight.setPollRateHz(100);
         limelight.pipelineSwitch(0);
         limelight.start();
-        //intake = hardwareMap.get(DcMotor.class, "intake");
-        //lancador = hardwareMap.get(DcMotor.class, "lancador");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        lancador = hardwareMap.get(DcMotor.class, "lancador");
     }
 
     @Override
