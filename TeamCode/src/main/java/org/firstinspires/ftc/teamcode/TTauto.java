@@ -115,15 +115,15 @@ public class TTauto extends OpMode {
     private Command autoRoutine() {
         return sequential(
                 follow(follower, andaGanhaPonto()),
-                ligaLancador(),
+                //ligaLancador(),
                 waitMs(2000),
-                desligaLancador(),
+                //desligaLancador(),
 
-                ligaIntake(),
+                //ligaIntake(),
                 follow(follower, giro()),
                 follow(follower, intakeGarden()),
                 waitMs(1000),
-                desligaIntake(),
+                //desligaIntake(),
 
                 follow(follower, lancar1()),
                 follow(follower, intakeFlower()),
